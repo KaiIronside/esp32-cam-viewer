@@ -3,30 +3,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ESP32-CAM Live Stream</title>
+  <title>ESP32-CAM</title>
   <style>
     body { font-family: system-ui; margin: 16px; }
-    img {
-      width: 100%;
-      max-width: 860px;
-      border-radius: 12px;
-      background: #111;
-      display: block;
-    }
-    .hint { opacity: .75; margin-top: 10px; }
+    iframe { width: 100%; max-width: 980px; height: 620px; border: 1px solid #ddd; border-radius: 12px; }
+    .hint { opacity: .75; margin: 10px 0; max-width: 980px; }
   </style>
 </head>
 <body>
-  <h2>ESP32-CAM Live Stream</h2>
-
-  <img
-    src="https://nonconversantly-draftiest-lannie.ngrok-free.dev/stream?ngrok-skip-browser-warning=1"
-    alt="stream"
-  />
-
+  <h2>ESP32-CAM Live</h2>
   <div class="hint">
-    Nếu đứng hình: refresh trang.  
-    (ngrok free – mỗi lần restart link sẽ đổi)
+    Nếu thấy trang cảnh báo ngrok: bấm <b>Visit Site</b> một lần, rồi stream sẽ hiện.
   </div>
+
+  <iframe
+    src="https://nonconversantly-draftiest-lannie.ngrok-free.dev/"
+    allow="autoplay"
+  ></iframe>
 </body>
 </html>
