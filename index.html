@@ -3,36 +3,30 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ESP32-CAM Viewer</title>
+  <title>ESP32-CAM Live Stream</title>
   <style>
     body { font-family: system-ui; margin: 16px; }
-    img { width: 100%; max-width: 860px; border-radius: 12px; background: #111; display:block; }
-    .hint { opacity: .7; margin-top: 10px; }
+    img {
+      width: 100%;
+      max-width: 860px;
+      border-radius: 12px;
+      background: #111;
+      display: block;
+    }
+    .hint { opacity: .75; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <h2>ESP32-CAM Viewer</h2>
+  <h2>ESP32-CAM Live Stream</h2>
 
-  <img id="cam" alt="stream" />
+  <img
+    src="https://nonconversantly-draftiest-lannie.ngrok-free.dev/stream?ngrok-skip-browser-warning=1"
+    alt="stream"
+  />
 
-  <div class="hint" id="st">loading...</div>
-
-  <script>
-    const STREAM_URL = "https://nonconversantly-draftiest-lannie.ngrok-free.dev/stream";
-
-    const img = document.getElementById("cam");
-    const st = document.getElementById("st");
-
-    function start() {
-      img.src = STREAM_URL + "?t=" + Date.now(); // cache-bust
-      st.textContent = STREAM_URL;
-    }
-
-    img.onerror = () => {
-      st.textContent = "Stream lỗi hoặc ngrok link đã đổi. Hãy update STREAM_URL rồi refresh.";
-    };
-
-    start();
-  </script>
+  <div class="hint">
+    Nếu đứng hình: refresh trang.  
+    (ngrok free – mỗi lần restart link sẽ đổi)
+  </div>
 </body>
 </html>
