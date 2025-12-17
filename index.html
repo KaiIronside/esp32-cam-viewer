@@ -1,37 +1,93 @@
 <!doctype html>
-<html>
+<html lang="vi">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ESP32-CAM Viewer</title>
+  <title>ESP32-CAM Live</title>
   <style>
-    body { font-family: system-ui; margin: 16px; }
-    img { width: 100%; max-width: 720px; border-radius: 12px; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 16px; }
+    .wrap { max-width: 860px; margin: 0 auto; }
+    .card { border: 1px solid #e6e6e6; border-radius: 14px; padding: 14px; }
+    h2 { margin: 0 0 10px; }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+    .btn {
+      border: 1px solid #ddd; background: #fff; border-radius: 10px;
+      padding: 8px 12px; cursor: pointer;
+    }
+    .btn:hover { background: #f6f6f6; }
+    .hint { opacity: .75; font-size: 14px; margin-top: 10px; }
+    img { width: 100%; border-radius: 12px; background: #111; display: block; }
+    code { background: #f3f3f3; padding: 2px 6px; border-radius: 6px; }
   </style>
 </head>
+
 <body>
-  <h2>ESP32-CAM Viewer</h2>
-  <img id="cam" alt="loading..." />
-  <div id="info"></div>
+  <div class="wrap">
+    <div class="card">
+      <h2>ESP32-CAM Live Stream</h2>
+
+      <!-- MJPEG stream -->
+      <img id="cam" alt="stream" />
+
+      <div class="row">
+        <button class="btn" id="btnReload">Reload</button>
+        <button class="btn" id="btnPause">Pause</button>
+        <span id="status" class="hint">...</span>
+      </div>
+
+      <div class="hint">
+        Nếu bị đứng hình: bấm <b>Reload</b>. Link ngrok của bạn đang dùng:
+        <code id="baseUrl"></code>
+      </div>
+    </div>
+  </div>
 
   <script>
-    const SERVER = "https://asked-ground-hawk-ventures.trycloudflare.com";
-    const img = document.getElementById("cam");
-    const info = document.getElementById("info");
+    // ====== ĐỔI LINK NÀY MỖI KHI RESTART NGROK ======
+    const BASE = "https://nonconversantly-draftiest-lannie.ngrok-free.dev";
+    const STREAM = BASE + "/stream";
 
-    async function tick() {
-      try {
-        const r = await fetch(`${SERVER}/latest.json?x=${Date.now()}`, { cache: "no-store" });
-        const j = await r.json();
-        img.src = `${SERVER}/latest.jpg?t=${j.ts}`;
-        info.textContent = `last ts: ${j.ts}`;
-      } catch (e) {
-        info.textContent = "cannot reach server";
-      }
+    const img = document.getElementById("cam");
+    const status = document.getElementById("status");
+    const baseUrl = document.getElementById("baseUrl");
+    const btnReload = document.getElementById("btnReload");
+    const btnPause = document.getElementById("btnPause");
+
+    baseUrl.textContent = BASE;
+
+    let paused = false;
+
+    function start() {
+      paused = false;
+      btnPause.textContent = "Pause";
+      // cache-bust để tránh browser giữ hình cũ
+      img.src = STREAM + "?t=" + Date.now();
+      status.textContent = "Streaming...";
     }
 
-    tick();
-    setInterval(tick, 333); // 3 FPS
+    function stop() {
+      paused = true;
+      btnPause.textContent = "Resume";
+      img.removeAttribute("src");
+      status.textContent = "Paused";
+    }
+
+    btnReload.addEventListener("click", () => {
+      if (!paused) start();
+    });
+
+    btnPause.addEventListener("click", () => {
+      if (paused) start();
+      else stop();
+    });
+
+    // Nếu stream lỗi/đứt, img sẽ error -> báo và chờ bạn reload
+    img.addEventListener("error", () => {
+      status.textContent = "Mất kết nối stream (ngrok tắt hoặc link đổi). Bấm Reload.";
+    });
+
+    // auto start
+    start();
   </script>
 </body>
 </html>
