@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ESP32-CAM Viewer</title>
+  <style>
+    body { font-family: system-ui; margin: 16px; }
+    img { width: 100%; max-width: 720px; border-radius: 12px; }
+  </style>
+</head>
+<body>
+  <h2>ESP32-CAM Viewer</h2>
+  <img id="cam" alt="loading..." />
+  <div id="info"></div>
+
+  <script>
+    const SERVER = "https://acknowledged-sonic-warming-regulated.trycloudflare.com";
+    const img = document.getElementById("cam");
+    const info = document.getElementById("info");
+
+    async function tick() {
+      try {
+        const r = await fetch(`${SERVER}/latest.json?x=${Date.now()}`, { cache: "no-store" });
+        const j = await r.json();
+        img.src = `${SERVER}/latest.jpg?t=${j.ts}`;
+        info.textContent = `last ts: ${j.ts}`;
+      } catch (e) {
+        info.textContent = "cannot reach server";
+      }
+    }
+
+    tick();
+    setInterval(tick, 333); // 3 FPS
+  </script>
+</body>
+</html>
